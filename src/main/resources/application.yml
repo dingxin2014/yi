@@ -1,0 +1,14 @@
+
+spring:
+  application:
+    name: yi
+
+
+
+
+huobi:
+  prefix: https://api.huobi.pro/market/
+  market:
+    trade: trade?symbol=xrpusdt
+    depth: depth?
+
