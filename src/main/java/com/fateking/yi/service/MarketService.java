@@ -1,7 +1,9 @@
 package com.fateking.yi.service;
 
+import com.fateking.yi.dto.HuobiResponse;
 import com.fateking.yi.enums.Period;
 import com.fateking.yi.enums.Symbol;
+import com.fateking.yi.enums.Type;
 
 /**
  * @author dingxin
@@ -17,17 +19,25 @@ public interface MarketService {
      * @param size
      * @return
      */
-    Object getKLine(Symbol symbol, Period period, Integer size);
+    HuobiResponse getKLine(Symbol symbol, Period period, Integer size);
 
+
+    /**
+     * 获取聚合行情
+     *
+     * @param symbol
+     * @return
+     */
+    HuobiResponse getMerged(Symbol symbol);
 
     /**
      * 获取marketdepth
      *
      * @param symbol
-     * @param period
+     * @param type
      * @return
      */
-    Object getDepth(Symbol symbol, Period period);
+    HuobiResponse getDepth(Symbol symbol, Type type);
 
 
     /**
@@ -36,7 +46,17 @@ public interface MarketService {
      * @param symbol
      * @return
      */
-    Object getTrade(Symbol symbol);
+    HuobiResponse getTrade(Symbol symbol);
+
+
+    /**
+     * 批量获取最近的交易记录
+     *
+     * @param symbol
+     * @param size
+     * @return
+     */
+    HuobiResponse getHistoryTrade(Symbol symbol, Integer size);
 
 
     /**
@@ -45,7 +65,7 @@ public interface MarketService {
      * @param symbol
      * @return
      */
-    Object getTicker(Symbol symbol);
+    HuobiResponse getTicker(Symbol symbol);
 
 
     /**
@@ -54,7 +74,7 @@ public interface MarketService {
      * @param symbol
      * @return
      */
-    Object getDetail(Symbol symbol);
+    HuobiResponse getDetail(Symbol symbol);
 
 
     /**
@@ -62,7 +82,7 @@ public interface MarketService {
      *
      * @return
      */
-    Object getSymbols();
+    HuobiResponse getSymbols();
 
 
 }

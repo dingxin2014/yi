@@ -32,11 +32,18 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-validation')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-websocket')
+    compile('org.springframework.boot:spring-boot-configuration-processor')
     runtime('mysql:mysql-connector-java')
     compileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 
+    compile('org.apache.commons:commons-lang3:3.7')
     compile('org.apache.httpcomponents:httpclient:4.5.4')
+    compile('com.zaxxer:HikariCP:2.7.6')
+    compile('mysql:mysql-connector-java:6.0.6')
+    compile('com.google.guava:guava:23.0')
+    compile('com.alibaba:fastjson:1.2.44')
+
 //    compile('org.springframework:spring-websocket:5.0.2.RELEASE')
 //    compile('javax.websocket:javax.websocket-api:1.1')
 }

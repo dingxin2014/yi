@@ -20,6 +20,7 @@ public interface AccountService {
 
     /**
      * 获取资产
+     *
      * @return
      */
     Balance getBalance();

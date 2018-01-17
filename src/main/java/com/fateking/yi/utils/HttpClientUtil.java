@@ -1,5 +1,8 @@
 package com.fateking.yi.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.fateking.yi.support.GlobalContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -32,33 +35,21 @@ public class HttpClientUtil {
     static String ACCEPT = "application/json, text/plain, */*";
     static String ACCEPT_ENCODING = "gzip, deflate, br";
     static String TOKEN_KEY = "hb-pro-token";
-    static String XRP_URL = "https://api.huobipro.com/v1/order/orders/?symbol=xrpusdt&size=11&states=partial-canceled,filled,canceled&quote=usdt&coin=xrp&account-id=1437644";
 
-    public static String fetchXrp(String token) {
+    public static <T> T get(String url, Class<T> clazz) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(XRP_URL);
-        httpGet.addHeader("User-Agent", USER_AGENT);
-        httpGet.addHeader("referer", REFERER);
-        httpGet.addHeader("accept-language", ACCEPT_LANGUAGE);
-        httpGet.addHeader("origin", ORIGIN);
-        httpGet.addHeader("accept", ACCEPT);
-        httpGet.addHeader("accept-encoding", ACCEPT_ENCODING);
-        httpGet.addHeader(TOKEN_KEY, token);
+        HttpGet httpGet = new HttpGet(url);
+        String token = GlobalContext.getToken();
+        if (token != null ) {
+            httpGet.addHeader(TOKEN_KEY, token);
+        }
 
-//        List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-//        urlParameters.add(new BasicNameValuePair("symbol", "xrpusdt"));
-//        urlParameters.add(new BasicNameValuePair("size", "100"));
-//        urlParameters.add(new BasicNameValuePair("states", "partial-canceled,filled,canceled"));
-//        urlParameters.add(new BasicNameValuePair("quote", "usdt"));
-//        urlParameters.add(new BasicNameValuePair("coin", "xrp"));
-//        urlParameters.add(new BasicNameValuePair("account-id", "1437644"));
-
-        HttpEntity postParams = null;
+        String responseStr = null;
         try {
 
             CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
-            System.out.println("POST Response Status:: "
+            System.out.println("GET Response Status:: "
                     + httpResponse.getStatusLine().getStatusCode());
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -74,13 +65,17 @@ public class HttpClientUtil {
 
             httpClient.close();
 
-            return response.toString();
+            responseStr = response.toString();
+            return JSON.parseObject(responseStr, clazz);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
             log.error(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
+        } catch (JSONException e) {
+            log.error(e.getMessage(), e);
+            log.error("JSON IS >>> "+ responseStr);
         }
 
         return null;
@@ -93,6 +88,12 @@ public class HttpClientUtil {
         httpPost.addHeader("Content-Type", "text/html;charset=UTF-8");
 
         List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+//        urlParameters.add(new BasicNameValuePair("symbol", "xrpusdt"));
+//        urlParameters.add(new BasicNameValuePair("size", "100"));
+//        urlParameters.add(new BasicNameValuePair("states", "partial-canceled,filled,canceled"));
+//        urlParameters.add(new BasicNameValuePair("quote", "usdt"));
+//        urlParameters.add(new BasicNameValuePair("coin", "xrp"));
+//        urlParameters.add(new BasicNameValuePair("account-id", "1437644"));
 
         HttpEntity postParams = null;
         try {
@@ -128,6 +129,6 @@ public class HttpClientUtil {
     }
 
     public static void main(String[] args) {
-        market();
+//        get("https://api.huobi.pro/market/history/kline?symbol=xrpusdt&period=1min&size=100");
     }
 }

@@ -12,7 +12,11 @@ import lombok.Getter;
 @Getter
 public enum Symbol {
 
-    XRP("xrp", "瑞波币");
+    XRP_USDT("xrpusdt", "瑞波币USDT"),
+
+    BTC_USDT("btcusdt", "比特币USDT"),
+
+    ETH_USDT("ethusdt", "");
 
     private String code;
     private String name;
