@@ -17,7 +17,7 @@ public class AutoTrade {
     @PostConstruct
     public void autoTrade() {
         //初始化扫描主线程
-        singleThreadExecutor.submit(new ScanService());
+        singleThreadExecutor.submit(new MainService());
     }
 
 

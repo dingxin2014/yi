@@ -27,6 +27,9 @@ public class HuobiConfig {
     private String historyTrade;
     @Value("${detail: #{null}")
     private String detail;
+    @Value("${symbols: #{null}")
+    private String symbols;
+
 
 
 }

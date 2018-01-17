@@ -77,12 +77,4 @@ public interface MarketService {
     HuobiResponse getDetail(Symbol symbol);
 
 
-    /**
-     * 获取支持的交易对
-     *
-     * @return
-     */
-    HuobiResponse getSymbols();
-
-
 }

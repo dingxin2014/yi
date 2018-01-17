@@ -27,20 +27,13 @@ import java.util.List;
 @Slf4j
 public class HttpClientUtil {
 
-    static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) " +
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
-    static String REFERER = "https://www.huobipro.com/zh-cn/xrp_usdt/exchange/";
-    static String ORIGIN = "https://www.huobipro.com";
-    static String ACCEPT_LANGUAGE = "zh-CN";
-    static String ACCEPT = "application/json, text/plain, */*";
-    static String ACCEPT_ENCODING = "gzip, deflate, br";
     static String TOKEN_KEY = "hb-pro-token";
 
     public static <T> T get(String url, Class<T> clazz) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(url);
         String token = GlobalContext.getToken();
-        if (token != null ) {
+        if (token != null) {
             httpGet.addHeader(TOKEN_KEY, token);
         }
 
@@ -75,7 +68,7 @@ public class HttpClientUtil {
             log.error(e.getMessage(), e);
         } catch (JSONException e) {
             log.error(e.getMessage(), e);
-            log.error("JSON IS >>> "+ responseStr);
+            log.error("JSON IS >>> " + responseStr);
         }
 
         return null;

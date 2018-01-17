@@ -73,8 +73,4 @@ public class HuobiMarketServiceImpl implements MarketService {
         return HttpClientUtil.get(huobiConfig.getDetail(), HuobiDetailResponse.class);
     }
 
-    @Override
-    public HuobiResponse getSymbols() {
-        return null;
-    }
 }
