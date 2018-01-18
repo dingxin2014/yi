@@ -37,6 +37,10 @@ public class MainService implements Runnable {
     }
 
     public void resetSymbol(Symbol symbol) {
+        if (symbol != null) {
+            log.warn("不允许切换监控Symbol!");
+            return;
+        }
         this.symbol = symbol;
         synchronized (this) {
             notify();
@@ -68,7 +72,7 @@ public class MainService implements Runnable {
                 if (order.getState() == null) {
                     log.warn("Illegal State!");
                 } else if (order.getState().isInProgress()) {
-                    log.info("存在进行中委托单！");
+                    log.info("存在进行中委托单！" + order);
                 }
             });
 
