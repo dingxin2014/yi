@@ -39,6 +39,10 @@ public class Order {
     private Symbol symbol;              //交易对
     private TradeType type;             //订单类型
 
+    private String exchange;
+    private String batch;
+
+
     public void setState(String state) {
         this.state = State.parse(state);
     }

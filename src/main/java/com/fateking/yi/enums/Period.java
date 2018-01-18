@@ -35,4 +35,9 @@ public enum Period {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return code;
+    }
 }

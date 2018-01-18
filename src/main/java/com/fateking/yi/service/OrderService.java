@@ -1,6 +1,7 @@
 package com.fateking.yi.service;
 
 import com.fateking.yi.dto.Order;
+import com.fateking.yi.dto.OrderMatch;
 import com.fateking.yi.enums.Direct;
 import com.fateking.yi.enums.State;
 import com.fateking.yi.enums.Symbol;
@@ -65,35 +66,37 @@ public interface OrderService {
      * @param orderId
      * @return
      */
-    Object getOrderMatchResults(Long orderId);
+    OrderMatch getOrderMatchResults(Long orderId);
 
     /**
      * 查询当前委托 历史委托
      *
-     * @param symbol
-     * @param state
-     * @param tradeType
-     * @param startDate
-     * @param endDate
-     * @param direct
-     * @param size
+     * @param symbol    交易对
+     * @param states    查询的订单状态组合，使用','分割
+     * @param types     查询的订单类型组合，使用','分割 非必需
+     * @param startDate 查询开始日期, 日期格式yyyy-mm-dd 非必需
+     * @param endDate   查询结束日期, 日期格式yyyy-mm-dd 非必需
+     * @param direct    查询方向 非必需
+     * @param size      查询记录大小 非必需
+     * @param from      查询起始 ID 非必需
      * @return
      */
-    List<Order> getOrderList(Symbol symbol, State state, TradeType tradeType,
-                             Date startDate, Date endDate, Direct direct, Integer size);
+    List<Order> getDelegations(Symbol symbol, State[] states, TradeType[] types,
+                               Date startDate, Date endDate, Direct direct, Integer size, Long from);
 
 
     /**
      * 查询当前成交 历史成交
      *
-     * @param symbol
-     * @param tradeType
-     * @param startDate
-     * @param endDate
-     * @param direct
-     * @param size
+     * @param symbol        交易对
+     * @param types         查询的订单类型组合，使用','分割 非必需
+     * @param startDate     查询开始日期, 日期格式yyyy-mm-dd 非必需
+     * @param endDate       查询结束日期, 日期格式yyyy-mm-dd 非必需
+     * @param direct        查询方向	    非必需
+     * @param size          查询记录大小	非必需
+     * @param from          查询起始 ID   非必需
      * @return
      */
-    List<Order> getOrderMatchResult(Symbol symbol, TradeType tradeType,
-                                    Date startDate, Date endDate, Direct direct, Integer size);
+    List<OrderMatch> getOrderMatchResult(Symbol symbol, TradeType[] types,
+                                    Date startDate, Date endDate, Direct direct, Integer size, Long from);
 }

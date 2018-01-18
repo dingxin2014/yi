@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.fateking.yi.config.HuobiConfig;
 import com.fateking.yi.dto.HuobiStandardResponse;
 import com.fateking.yi.dto.Order;
+import com.fateking.yi.dto.OrderMatch;
 import com.fateking.yi.enums.Direct;
 import com.fateking.yi.enums.State;
 import com.fateking.yi.enums.Symbol;
@@ -13,6 +14,8 @@ import com.fateking.yi.utils.HttpClientUtil;
 import com.fateking.yi.utils.SpElUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,17 +72,63 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Object getOrderMatchResults(Long orderId) {
-        return null;
+    public OrderMatch getOrderMatchResults(Long orderId) {
+        notNull(orderId, "order-id must not be null!");
+        Map<String, Object> context = Maps.newHashMap();
+        context.put("order-id", orderId);
+        return (OrderMatch) HttpClientUtil.get(SpElUtil.parse(huobiConfig.getOrderMatch(), context), null, HuobiStandardResponse.class).getData();
     }
 
     @Override
-    public List<Order> getOrderList(Symbol symbol, State state, TradeType tradeType, Date startDate, Date endDate, Direct direct, Integer size) {
-        return null;
+    public List<Order> getDelegations(Symbol symbol, State[] states, TradeType[] types, Date startDate, Date endDate, Direct direct, Integer size, Long from) {
+        Map<String, String> params = Maps.newHashMap();
+        params.put("symbol", symbol.getCode());
+        params.put("states", StringUtils.join(",", states));
+        if (types != null) {
+            params.put("types", StringUtils.join(",", states));
+        }
+        if (startDate != null) {
+            params.put("start-date", DateFormatUtils.format(startDate, "yyyy-mm-dd"));
+        }
+        if (endDate != null) {
+            params.put("end-date", DateFormatUtils.format(endDate, "yyyy-mm-dd"));
+        }
+        if (direct != null) {
+            params.put("direct", direct.getCode());
+        }
+        if (from != null) {
+            params.put("from", String.valueOf(from));
+        }
+        if (size != null) {
+            params.put("size", String.valueOf(size));
+        }
+        return (List<Order>) HttpClientUtil.get(huobiConfig.getDelegate(), params, HuobiStandardResponse.class).getData();
     }
 
     @Override
-    public List<Order> getOrderMatchResult(Symbol symbol, TradeType tradeType, Date startDate, Date endDate, Direct direct, Integer size) {
-        return null;
+    public List<OrderMatch> getOrderMatchResult(Symbol symbol, TradeType[] types, Date startDate, Date endDate, Direct direct, Integer size, Long from) {
+        Map<String, String> params = Maps.newHashMap();
+        params.put("symbol", symbol.getCode());
+        if (types != null) {
+            params.put("types", StringUtils.join(types, ","));
+        }
+        if (startDate != null) {
+            params.put("start-date", DateFormatUtils.format(startDate, "yyyy-mm-dd"));
+        }
+        if (endDate != null) {
+            params.put("end-date", DateFormatUtils.format(endDate, "yyyy-mm-dd"));
+        }
+        if (from != null) {
+            params.put("from", String.valueOf(from));
+        }
+        if (direct != null) {
+            params.put("direct", direct.getCode());
+        }
+        if (size != null) {
+            params.put("size", String.valueOf(size));
+        }
+        return (List<OrderMatch>) HttpClientUtil.get(huobiConfig.getMatch(), params, HuobiStandardResponse.class).getData();
     }
+
+
 }

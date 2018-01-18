@@ -41,4 +41,9 @@ public enum Symbol {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return code;
+    }
 }

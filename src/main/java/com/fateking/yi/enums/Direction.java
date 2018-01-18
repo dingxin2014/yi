@@ -13,4 +13,8 @@ public enum Direction {
     private String code;
     private String name;
 
+    @Override
+    public String toString() {
+        return code;
+    }
 }

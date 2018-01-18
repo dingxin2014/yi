@@ -55,6 +55,8 @@ public class HuobiConfig {
     private String batchCancel;
     @Value("${order: #{null}")
     private String order;
+    @Value("${orderMatch: #{null}")
+    private String orderMatch;
     @Value("${delegate: #{null}")
     private String delegate;
     @Value("${match: #{null}")

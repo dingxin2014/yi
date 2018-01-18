@@ -1,7 +1,10 @@
 package com.fateking.yi.enums;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * 委托单状态
@@ -42,5 +45,36 @@ public enum State {
             }
         }
         return false;
+    }
+
+    /**
+     * 状态是否进行中
+     *
+     * @return
+     */
+    public boolean isInProgress() {
+        return in(PreSubmitted, Submitted, PartialFilled);
+    }
+
+    public static final List<State> inProgressStates() {
+        return Lists.newArrayList(PreSubmitted, Submitted, PartialFilled);
+    }
+
+    public static final List<State> notInProgressStates() {
+        return Lists.newArrayList(PartialCanceled, Filled, Canceled);
+    }
+
+    /**
+     * 状态不在进行中 正常/非正常 结束单据
+     *
+     * @return
+     */
+    public boolean notInProgress() {
+        return !isInProgress();
+    }
+
+    @Override
+    public String toString() {
+        return code;
     }
 }

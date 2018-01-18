@@ -1,8 +1,16 @@
 package com.fateking.yi.main;
 
+import com.fateking.yi.dto.Order;
+import com.fateking.yi.enums.State;
+import com.fateking.yi.enums.Symbol;
+import com.fateking.yi.service.AccountService;
+import com.fateking.yi.service.CommonService;
 import com.fateking.yi.service.MarketService;
+import com.fateking.yi.service.OrderService;
+import com.fateking.yi.support.SpringObjectFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -14,13 +22,57 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Slf4j
 public class MainService implements Runnable {
 
-    @Autowired
     private MarketService marketService;
+    private CommonService commonService;
+    private AccountService accountService;
+    private OrderService orderService;
+
+    private Symbol symbol;
+
+    public MainService() {
+        marketService = SpringObjectFactory.getBean(MarketService.class);
+        commonService = SpringObjectFactory.getBean(CommonService.class);
+        accountService = SpringObjectFactory.getBean(AccountService.class);
+        orderService = SpringObjectFactory.getBean(OrderService.class);
+    }
+
+    public void resetSymbol(Symbol symbol) {
+        this.symbol = symbol;
+        synchronized (this) {
+            notify();
+        }
+    }
+
 
     @Override
     public void run() {
         while (true) {
-            log.info("检查是否已经存在委托单");
+            if (symbol == null) {
+                try {
+                    log.info("交易对SYMBOL为空，等待设置交易对");
+                    synchronized (this) {
+                        wait();
+                    }
+                    continue;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                log.info("交易对为[" + symbol + "]");
+            }
+
+            log.info("检查是否已经存在未完成委托单");
+            List<Order> orderList = orderService.getDelegations(symbol, State.inProgressStates().toArray(new State[State.inProgressStates().size()]),
+                    null, null, null, null, null, null);
+            orderList.stream().forEach(order -> {
+                if (order.getState() == null) {
+                    log.warn("Illegal State!");
+                } else if (order.getState().isInProgress()) {
+                    log.info("存在进行中委托单！");
+                }
+            });
+
+
             try {
                 SECONDS.sleep(1);
             } catch (InterruptedException e) {

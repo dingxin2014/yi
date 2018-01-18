@@ -5,7 +5,6 @@ import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.Type;
 import com.fateking.yi.service.CommonService;
 import com.fateking.yi.service.MarketService;
-import com.fateking.yi.support.GlobalContext;
 import com.fateking.yi.support.Result;
 import com.fateking.yi.support.SpringObjectFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +21,6 @@ public class IndexController {
     public Result<String> index() {
         return Result.success();
     }
-
-    //https://api.huobipro.com/v1/order/orders/?
-    // symbol=xrpusdt&size=11&states=partial-canceled,
-    // filled,canceled&quote=usdt&
-    // coin=xrp&account-id=1437644
 
 
     @GetMapping("/huobi/kline")
@@ -63,8 +57,6 @@ public class IndexController {
     public Result currency() {
         return Result.success(SpringObjectFactory.getBean(CommonService.class).getCurrencys());
     }
-
-
 
 
 }

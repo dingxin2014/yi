@@ -8,7 +8,7 @@ spring:
     url: jdbc:mysql://localhost:3306/yi
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: ***
+    password: zhaopin123
     hikari:
       maxLifetime: 1765000  #一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒以上
       maximumPoolSize: 15   #连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
@@ -19,12 +19,38 @@ logging:
 
 ## https://github.com/huobiapi/API_Docs/wiki/REST_api_reference
 huobi:
+  token_key: hb-pro-token
+  fee_percent: 0.002  #.2%
+  #行情API GET
   kline: https://api.huobi.pro/market/history/kline   #k线
   merged: https://api.huobi.pro/market/detail/merged  #获取聚合行情
   trade: https://api.huobi.pro/market/trade
   history_trade: https://api.huobi.pro/market/history/trade  #批量获取最近的交易记录
   depth: https://api.huobi.pro/market/depth  #获取 Market Depth 数据
   detail: https://api.huobi.pro/market/detail #获取 Market Detail 24小时成交量数据
+
+  #基本信息API GET
+  symbols: https://api.huobi.pro/v1/common/symbols #查询系统支持的所有交易对及精度
+  timestamp: https://api.huobi.pro/v1/common/timestamp #查询系统时间
+  currencys: https://api.huobi.pro/v1/common/currencys #查询支持币种
+
+  #账户API GET
+  accounts: https://api.huobi.pro/v1/account/accounts #用户资产
+  balance: https://api.huobi.pro/v1/account/accounts/#{#accountId}/balance #查询指定账户余额
+
+  #交易API POST
+  place: https://api.huobi.pro/v1/order/orders/place #下单
+  cancel: https://api.huobi.pro/v1/order/orders/#{#orderId}/submitcancel #申请撤销
+  batch_cancel: https://api.huobi.pro/v1/order/orders/batchcance #申请批量撤销订单
+  order: https://api.huobi.pro/v1/order/orders/#{#orderId}  #GET 查询某个订单
+  order_match: https://api.huobi.pro/v1/order/orders/#{#orderId}/matchresults #GET 查询某个订单的成交明细
+  delegate: https://api.huobi.pro/v1/order/orders #GET 查询某个委托 历史委托
+  match: https://api.huobi.pro/v1/order/matchresults #GET 查询当前成交 历史成交
+
+  #借贷交易API  暂时不需要
+
+  #虚拟币提现API
+
 
 yi:
   retry:
