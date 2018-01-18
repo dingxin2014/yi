@@ -20,13 +20,16 @@ public interface OrderService {
     /**
      * 下单
      *
-     * @param amount
-     * @param symbol
-     * @param tradeType
-     * @param price
-     * @return
+     * @param accountId 账户 ID，使用accounts方法获得。币币交易使用‘spot’账户的accountid；借贷资产交易，请使用‘margin’账户的accountid
+     * @param amount 限价单表示下单数量，市价买单时表示买多少钱，市价卖单时表示卖多少币
+     * @param price  下单价格，市价单不传该参数
+     * @param source 订单来源 api，如果使用借贷资产交易，请填写‘margin-api’
+     * @param symbol 交易对
+     * @param tradeType 订单类型
+     * @return  订单ID
      */
-    Object sendOrder(BigDecimal amount, Symbol symbol, TradeType tradeType, BigDecimal price);
+    Long sendOrder(Long accountId, BigDecimal amount, BigDecimal price, String source,
+                     Symbol symbol, TradeType tradeType);
 
 
     /**

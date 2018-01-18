@@ -43,6 +43,8 @@ dependencies {
     compile('mysql:mysql-connector-java:6.0.6')
     compile('com.google.guava:guava:23.0')
     compile('com.alibaba:fastjson:1.2.44')
+    compile('io.springfox:springfox-swagger2:2.2.2')
+    compile('io.springfox:springfox-swagger-ui:2.2.2')
 
 //    compile('org.springframework:spring-websocket:5.0.2.RELEASE')
 //    compile('javax.websocket:javax.websocket-api:1.1')

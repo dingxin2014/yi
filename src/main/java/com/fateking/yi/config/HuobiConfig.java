@@ -15,6 +15,10 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class HuobiConfig {
 
+    @Value("${tokenKey: #{null}}")
+    private String tokenKey;
+
+    //行情API GET
     @Value("${kline: #{null}}")
     private String kline;
     @Value("${merged: #{null}}")
@@ -27,9 +31,33 @@ public class HuobiConfig {
     private String historyTrade;
     @Value("${detail: #{null}")
     private String detail;
+
+    //基本信息API GET
     @Value("${symbols: #{null}")
     private String symbols;
+    @Value("${timestamp: #{null}")
+    private String timestamp;
+    @Value("${currencys: #{null}")
+    private String currencys;
 
+    //账户API GET
+    @Value("${accounts: #{null}")
+    private String accounts;
+    @Value("${balance: #{null}")
+    private String balance;
 
+    //交易API
+    @Value("${place: #{null}")
+    private String place;
+    @Value("${cancel: #{null}")
+    private String cancel;
+    @Value("${batch_cancel: #{null}")
+    private String batchCancel;
+    @Value("${order: #{null}")
+    private String order;
+    @Value("${delegate: #{null}")
+    private String delegate;
+    @Value("${match: #{null}")
+    private String match;
 
 }

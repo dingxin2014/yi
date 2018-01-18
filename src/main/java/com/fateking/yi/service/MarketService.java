@@ -60,15 +60,6 @@ public interface MarketService {
 
 
     /**
-     * merge ticker
-     *
-     * @param symbol
-     * @return
-     */
-    HuobiResponse getTicker(Symbol symbol);
-
-
-    /**
      * 获取 Market Detail 24小时成交量数据
      *
      * @param symbol

@@ -21,7 +21,8 @@ public interface AccountService {
     /**
      * 获取资产
      *
+     * @param accountId
      * @return
      */
-    Balance getBalance();
+    Balance getBalance(Long accountId);
 }
