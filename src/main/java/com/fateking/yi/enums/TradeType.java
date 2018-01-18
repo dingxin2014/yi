@@ -31,4 +31,13 @@ public enum TradeType {
         }
         return false;
     }
+
+    public static TradeType parse(String type) {
+        for (TradeType t : values()) {
+            if (t.code.equals(type)) {
+                return t;
+            }
+        }
+        return null;
+    }
 }

@@ -22,4 +22,25 @@ public enum State {
 
     private String code;
     private String name;
+
+    public static State parse(String code) {
+        for (State s : values()) {
+            if (s.code.equals(code)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public boolean in(State... states) {
+        if (states == null) {
+            return false;
+        }
+        for (State state : states) {
+            if (this.equals(state)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

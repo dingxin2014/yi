@@ -32,4 +32,13 @@ public enum Symbol {
         }
         return false;
     }
+
+    public static Symbol parse(String symbol) {
+        for (Symbol s : values()) {
+            if (s.code.equals(symbol)) {
+                return s;
+            }
+        }
+        return null;
+    }
 }

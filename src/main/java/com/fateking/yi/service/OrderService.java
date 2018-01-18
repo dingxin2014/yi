@@ -9,6 +9,7 @@ import com.fateking.yi.enums.TradeType;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单信息
@@ -21,15 +22,15 @@ public interface OrderService {
      * 下单
      *
      * @param accountId 账户 ID，使用accounts方法获得。币币交易使用‘spot’账户的accountid；借贷资产交易，请使用‘margin’账户的accountid
-     * @param amount 限价单表示下单数量，市价买单时表示买多少钱，市价卖单时表示卖多少币
-     * @param price  下单价格，市价单不传该参数
-     * @param source 订单来源 api，如果使用借贷资产交易，请填写‘margin-api’
-     * @param symbol 交易对
+     * @param amount    限价单表示下单数量，市价买单时表示买多少钱，市价卖单时表示卖多少币
+     * @param price     下单价格，市价单不传该参数
+     * @param source    订单来源 api，如果使用借贷资产交易，请填写‘margin-api’
+     * @param symbol    交易对
      * @param tradeType 订单类型
-     * @return  订单ID
+     * @return 订单ID
      */
     Long sendOrder(Long accountId, BigDecimal amount, BigDecimal price, String source,
-                     Symbol symbol, TradeType tradeType);
+                   Symbol symbol, TradeType tradeType);
 
 
     /**
@@ -38,7 +39,16 @@ public interface OrderService {
      * @param orderId
      * @return
      */
-    Object cancelOrder(Long orderId);
+    Long cancelOrder(Long orderId);
+
+
+    /**
+     * 批量取消订单
+     *
+     * @param orderIdList
+     * @return
+     */
+    Map<String, List> batchCancelOrder(List<Long> orderIdList);
 
     /**
      * 查询某个订单

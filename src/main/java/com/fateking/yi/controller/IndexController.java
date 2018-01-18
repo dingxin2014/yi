@@ -3,6 +3,7 @@ package com.fateking.yi.controller;
 import com.fateking.yi.enums.Period;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.Type;
+import com.fateking.yi.service.CommonService;
 import com.fateking.yi.service.MarketService;
 import com.fateking.yi.support.GlobalContext;
 import com.fateking.yi.support.Result;
@@ -57,6 +58,12 @@ public class IndexController {
     public Result detail() {
         return Result.success(SpringObjectFactory.getBean(MarketService.class).getDetail(Symbol.XRP_USDT));
     }
+
+    @GetMapping("/huobi/currency")
+    public Result currency() {
+        return Result.success(SpringObjectFactory.getBean(CommonService.class).getCurrencys());
+    }
+
 
 
 

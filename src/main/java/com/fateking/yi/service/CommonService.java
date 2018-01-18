@@ -1,8 +1,7 @@
 package com.fateking.yi.service;
 
-import com.fateking.yi.dto.Symbol;
+import com.fateking.yi.dto.SymbolDTO;
 import com.fateking.yi.enums.SymbolPartition;
-import com.fateking.yi.support.Result;
 
 import java.util.List;
 
@@ -18,15 +17,15 @@ public interface CommonService {
      * @param symbolPartition 交易区
      * @return
      */
-    Result<Symbol> getSymbols(String baseCurrency, String quoteCurrency, Integer pricePrecision,
-                              Integer amountPrecision, SymbolPartition symbolPartition);
+    SymbolDTO getSymbols(String baseCurrency, String quoteCurrency, Integer pricePrecision,
+                         Integer amountPrecision, SymbolPartition symbolPartition);
 
     /**
      * 获取系统时间戳
      *
      * @return
      */
-    Result<Long> getTimestamp();
+    Long getTimestamp();
 
 
     /**
@@ -34,5 +33,5 @@ public interface CommonService {
      *
      * @return
      */
-    Result<List<String>> getCurrencys();
+    List<String> getCurrencys();
 }

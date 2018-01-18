@@ -3,8 +3,8 @@ package com.fateking.yi.service.impl;
 import com.fateking.yi.config.HuobiConfig;
 import com.fateking.yi.dto.Account;
 import com.fateking.yi.dto.Balance;
+import com.fateking.yi.dto.HuobiStandardResponse;
 import com.fateking.yi.service.AccountService;
-import com.fateking.yi.support.Result;
 import com.fateking.yi.utils.HttpClientUtil;
 import com.fateking.yi.utils.SpElUtil;
 import com.google.common.collect.Maps;
@@ -26,13 +26,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccount() {
-        return (Account) HttpClientUtil.get(huobiConfig.getAccounts(), null, Result.class).getData();
+        return (Account) HttpClientUtil.get(huobiConfig.getAccounts(), null, HuobiStandardResponse.class).getData();
     }
 
     @Override
     public Balance getBalance(Long accountId) {
         Map<String, Object> context = Maps.newHashMap();
         context.put("accountId", accountId);
-        return (Balance) HttpClientUtil.get(SpElUtil.parse(huobiConfig.getBalance(), context), null, Result.class).getData();
+        return (Balance) HttpClientUtil.get(SpElUtil.parse(huobiConfig.getBalance(), context), null, HuobiStandardResponse.class).getData();
     }
 }

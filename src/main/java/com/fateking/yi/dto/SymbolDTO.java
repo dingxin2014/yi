@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class Symbol implements Serializable {
+public class SymbolDTO implements Serializable {
 
     @JsonProperty("base-currency")
     private String baseCurrency;
