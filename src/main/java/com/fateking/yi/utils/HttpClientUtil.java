@@ -2,11 +2,12 @@ package com.fateking.yi.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
-import com.fateking.yi.config.HuobiConfig;
+import com.fateking.yi.config.AccountConfig;
 import com.fateking.yi.exception.IllegalArgumentException;
-import com.fateking.yi.support.GlobalContext;
 import com.fateking.yi.support.SpringObjectFactory;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -23,8 +24,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author dingxin
@@ -37,39 +40,43 @@ public class HttpClientUtil {
             throw new IllegalArgumentException("url must not be null!");
         }
         StringBuilder stringBuilder = new StringBuilder(url);
-        if (params != null) {
-            if (url.indexOf("?") > 0) {
-                params.forEach((key, value) ->
-                        stringBuilder.append(key)
-                                .append("=")
-                                .append(value)
-                                .append("&")
-                );
-            } else {
-                stringBuilder.append("?");
-                params.forEach((key, value) ->
-                        stringBuilder.append(key)
-                                .append("=")
-                                .append(value)
-                                .append("&")
-                );
+
+        if (params == null) {
+            params = Maps.newHashMap();
+        }
+
+        String accessKey = SpringObjectFactory.getBean(AccountConfig.class).getAccessKey();
+        String privateKey = SpringObjectFactory.getBean(AccountConfig.class).getPrivateKey();
+        Date now = new Date();
+        String timeStamp = DateFormatUtils.format(now, "yyyy-MM-dd'T'HH:mm:ss");
+
+        params.put("AccessKeyId", accessKey);
+        params.put("SignatureMethod", "HmacSHA256");
+        params.put("SignatureVersion", "2");
+        params.put("Timestamp", timeStamp);
+
+        List<String> list = params.keySet().stream().sorted().collect(Collectors.toList());
+
+        if (url.indexOf("?") < 0) {
+            stringBuilder.append("?");
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            stringBuilder.append(list.get(i)).append("=").append(params.get(list.get(i)));
+            if (i != list.size() - 1) {
+                stringBuilder.append("&");
             }
         }
 
+        stringBuilder.append("=").append("Signature").append("=").append(HmacSHA256Util.sha256HMAC(stringBuilder.toString(), privateKey));
+
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(stringBuilder.toString());
-        String token = GlobalContext.getToken();
-        if (token != null) {
-            httpGet.addHeader(SpringObjectFactory.getBean(HuobiConfig.class).getTokenKey(), token);
-        }
+        httpGet.addHeader("Content-Type", "application/json");
 
         String responseStr = null;
         try {
-
             CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-
-            System.out.println("GET Response Status:: "
-                    + httpResponse.getStatusLine().getStatusCode());
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     httpResponse.getEntity().getContent()));
@@ -108,16 +115,27 @@ public class HttpClientUtil {
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         HttpPost httpPost = new HttpPost(url);
-        String token = GlobalContext.getToken();
-        if (token != null) {
-            httpPost.addHeader(SpringObjectFactory.getBean(HuobiConfig.class).getTokenKey(), token);
-        }
+        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
         List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
         if (params != null) {
-            params.forEach((key, value) -> {
-                urlParameters.add(new BasicNameValuePair(key, value));
-            });
+            params.forEach((key, value) -> urlParameters.add(new BasicNameValuePair(key, value)));
         }
+
+        String accessKey = SpringObjectFactory.getBean(AccountConfig.class).getAccessKey();
+        String privateKey = SpringObjectFactory.getBean(AccountConfig.class).getPrivateKey();
+        Date now = new Date();
+        String timeStamp = DateFormatUtils.format(now, "yyyy-MM-dd'T'HH:mm:ss");
+        StringBuilder stringBuilder = new StringBuilder(url);
+        stringBuilder.append("?").append("AccessKeyId").append(accessKey)
+                .append("SignatureMethod").append("HmacSHA256")
+                .append("SignatureVersion").append("2")
+                .append("Timestamp").append(timeStamp);
+
+        urlParameters.add(new BasicNameValuePair("AccessKeyId", accessKey));
+        urlParameters.add(new BasicNameValuePair("SignatureMethod", "HmacSHA256"));
+        urlParameters.add(new BasicNameValuePair("SignatureVersion", "2"));
+        urlParameters.add(new BasicNameValuePair("Timestamp", timeStamp));
+        urlParameters.add(new BasicNameValuePair("Signature", HmacSHA256Util.sha256HMAC(stringBuilder.toString(), privateKey)));
 
         HttpEntity postParams;
         String responseStr = null;
@@ -125,9 +143,6 @@ public class HttpClientUtil {
             postParams = new UrlEncodedFormEntity(urlParameters);
             httpPost.setEntity(postParams);
             CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
-
-            System.out.println("POST Response Status:: "
-                    + httpResponse.getStatusLine().getStatusCode());
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     httpResponse.getEntity().getContent()));

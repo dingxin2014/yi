@@ -25,11 +25,11 @@ public class Result<T> implements Serializable {
         this.data = data;
     }
 
-    public static <T> Result<T> success() {
-        return success(null);
+    public static <T> Result<T> ok() {
+        return ok(null);
     }
 
-    public static <T> Result<T> success(T data) {
+    public static <T> Result<T> ok(T data) {
         return new Result(1, null, DEFAULT_SUCCESS_MSG, data);
     }
 

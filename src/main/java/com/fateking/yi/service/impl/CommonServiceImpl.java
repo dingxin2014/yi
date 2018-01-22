@@ -9,6 +9,7 @@ import com.fateking.yi.utils.HttpClientUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@Retryable
 public class CommonServiceImpl implements CommonService {
 
     @Autowired

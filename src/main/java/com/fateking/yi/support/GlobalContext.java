@@ -23,12 +23,11 @@ public class GlobalContext {
         tokenContext.set(token);
     }
 
-    private static final Map<String, Runnable> monitorRunnable = Maps.newConcurrentMap();
+    public static final Map<Symbol, KTickStack> stack = Maps.newConcurrentMap();
 
-    public static void monitor(Symbol symbol) {
-        if (monitorRunnable.containsKey(symbol.getCode())) {
-            log.info(symbol + "has been monitored!");
-        }
+    static {
+        stack.put(Symbol.XRP_USDT, new KTickStack(180, 60));
     }
+
 
 }

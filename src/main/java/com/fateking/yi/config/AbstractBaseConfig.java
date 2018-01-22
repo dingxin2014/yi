@@ -30,6 +30,8 @@ import org.springframework.retry.annotation.RetryConfiguration;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.ErrorHandler;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -212,6 +214,26 @@ public abstract class AbstractBaseConfig {
             public void log() {
                 log.info("Init DefaultExceptionAdviceHandler!");
             }
+        }
+
+    }
+
+    @Value("${yi.schedule.pool_size: #{1}}")
+    private int poolSize;
+
+    @Bean
+    public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(poolSize);
+        scheduler.setErrorHandler(new DefaultErrorHandler());
+        return scheduler;
+    }
+
+    public class DefaultErrorHandler implements ErrorHandler {
+
+        @Override
+        public void handleError(Throwable e) {
+            log.info(e.getMessage(), e);
         }
 
     }

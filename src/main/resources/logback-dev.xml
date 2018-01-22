@@ -27,7 +27,7 @@
 
     <root level="warn">
         <appender-ref ref="console" />
-        <!--<appender-ref ref="file" />-->
+        <appender-ref ref="file" />
     </root>
     <logger name="org.springframework.scheduling"  level="error" />
     <Logger name="org.apache.catalina.util.LifecycleBase" level="error" />
@@ -35,7 +35,7 @@
     <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn" />
     <Logger name="org.springframework" level="info" />
     <logger name="com.fateking" level="debug" />
-    <logger name="org.mybatis" level="debug" />
+    <logger name="org.mybatis" level="info" />
     <logger name="java.sql" level="error" />
     <logger name="java.sql.Connection" level="error" />
     <logger name="java.sql.Statement" level="error" />

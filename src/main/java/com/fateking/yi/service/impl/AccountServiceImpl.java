@@ -10,6 +10,7 @@ import com.fateking.yi.utils.SpElUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 @Service
 @Slf4j
+@Retryable
 public class AccountServiceImpl implements AccountService {
 
     @Autowired

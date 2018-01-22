@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -72,6 +73,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Retryable
     public OrderMatch getOrderMatchResults(Long orderId) {
         notNull(orderId, "order-id must not be null!");
         Map<String, Object> context = Maps.newHashMap();
@@ -80,6 +82,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Retryable
     public List<Order> getDelegations(Symbol symbol, State[] states, TradeType[] types, Date startDate, Date endDate, Direct direct, Integer size, Long from) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
@@ -88,10 +91,10 @@ public class OrderServiceImpl implements OrderService {
             params.put("types", StringUtils.join(",", states));
         }
         if (startDate != null) {
-            params.put("start-date", DateFormatUtils.format(startDate, "yyyy-mm-dd"));
+            params.put("start-date", DateFormatUtils.format(startDate, "yyyy-MM-dd"));
         }
         if (endDate != null) {
-            params.put("end-date", DateFormatUtils.format(endDate, "yyyy-mm-dd"));
+            params.put("end-date", DateFormatUtils.format(endDate, "yyyy-MM-dd"));
         }
         if (direct != null) {
             params.put("direct", direct.getCode());
@@ -106,6 +109,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Retryable
     public List<OrderMatch> getOrderMatchResult(Symbol symbol, TradeType[] types, Date startDate, Date endDate, Direct direct, Integer size, Long from) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
@@ -113,10 +117,10 @@ public class OrderServiceImpl implements OrderService {
             params.put("types", StringUtils.join(types, ","));
         }
         if (startDate != null) {
-            params.put("start-date", DateFormatUtils.format(startDate, "yyyy-mm-dd"));
+            params.put("start-date", DateFormatUtils.format(startDate, "yyyy-MM-dd"));
         }
         if (endDate != null) {
-            params.put("end-date", DateFormatUtils.format(endDate, "yyyy-mm-dd"));
+            params.put("end-date", DateFormatUtils.format(endDate, "yyyy-MM-dd"));
         }
         if (from != null) {
             params.put("from", String.valueOf(from));

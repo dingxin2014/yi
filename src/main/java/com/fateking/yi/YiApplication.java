@@ -8,17 +8,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author dingxin
  */
 @Configuration
-@EnableTransactionManagement
-@EnableAsync
+@EnableTransactionManagement        //启用事务
+@EnableAsync                        //启用异步
+@EnableScheduling                   //启用定时任务
 @SpringBootApplication
 @ComponentScan("com.fateking.yi")
-@EnableAutoConfiguration
+@EnableAutoConfiguration            //启用自动配置
 @EnableBaseConfig(defaultThrowExceptionClass = YiException.class)
 public class YiApplication {
 
