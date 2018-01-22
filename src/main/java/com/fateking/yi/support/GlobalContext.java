@@ -25,9 +25,4 @@ public class GlobalContext {
 
     public static final Map<Symbol, KTickStack> stack = Maps.newConcurrentMap();
 
-    static {
-        stack.put(Symbol.XRP_USDT, new KTickStack(180, 60));
-    }
-
-
 }

@@ -2,6 +2,8 @@ package com.fateking.yi.main;
 
 import com.fateking.yi.config.CronConfig;
 import com.fateking.yi.enums.Symbol;
+import com.fateking.yi.support.GlobalContext;
+import com.fateking.yi.support.KTickStack;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -33,6 +35,7 @@ public class AutoTrade {
 
     @PostConstruct
     public void autoTrade() {
+        GlobalContext.stack.put(Symbol.XRP_USDT, new KTickStack(180, 60));
         threadPoolTaskScheduler.schedule(new SyncKLine(Symbol.XRP_USDT), new CronTrigger(syncCron));
         threadPoolTaskScheduler.schedule(new MainService(Symbol.XRP_USDT), new CronTrigger(mainCron));
     }

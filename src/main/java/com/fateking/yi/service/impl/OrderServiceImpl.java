@@ -12,15 +12,16 @@ import com.fateking.yi.enums.TradeType;
 import com.fateking.yi.service.OrderService;
 import com.fateking.yi.utils.HttpClientUtil;
 import com.fateking.yi.utils.SpElUtil;
+import com.fateking.yi.utils.StringUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,9 +87,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getDelegations(Symbol symbol, State[] states, TradeType[] types, Date startDate, Date endDate, Direct direct, Integer size, Long from) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        params.put("states", StringUtils.join(",", states));
+        params.put("states", StringUtil.join(",", Arrays.asList(states), State::getCode));
         if (types != null) {
-            params.put("types", StringUtils.join(",", states));
+            params.put("types", StringUtil.join(",", Arrays.asList(states), State::getCode));
         }
         if (startDate != null) {
             params.put("start-date", DateFormatUtils.format(startDate, "yyyy-MM-dd"));
@@ -114,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
         if (types != null) {
-            params.put("types", StringUtils.join(types, ","));
+            params.put("types", StringUtil.join(",", Arrays.asList(types), TradeType::getCode));
         }
         if (startDate != null) {
             params.put("start-date", DateFormatUtils.format(startDate, "yyyy-MM-dd"));

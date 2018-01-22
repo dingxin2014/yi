@@ -68,7 +68,8 @@ public class HttpClientUtil {
             }
         }
 
-        stringBuilder.append("=").append("Signature").append("=").append(HmacSHA256Util.sha256HMAC(stringBuilder.toString(), privateKey));
+        String msg = stringBuilder.toString();
+        stringBuilder.append("&").append("Signature").append("=").append(HmacSHA256Util.sha256HMAC(msg, privateKey));
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(stringBuilder.toString());
