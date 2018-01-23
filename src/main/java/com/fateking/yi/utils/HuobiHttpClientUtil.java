@@ -39,7 +39,9 @@ public class HuobiHttpClientUtil {
 
     private static final String LANG = "zh-CN";
     private static final String GET_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    private static final String GET_MARKET_CONTENT_TYPE = "application/json";
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36";
+
 
     private static String ACCESS_KEY;
     private static String PRIVATE_KEY;
@@ -48,6 +50,64 @@ public class HuobiHttpClientUtil {
         ACCESS_KEY = accessKey;
         PRIVATE_KEY = privateKey;
     }
+
+    public static <T> T getMarket(String url, Map<String, String> params, Class<T> clazz) {
+        if (url == null) {
+            throw new IllegalArgumentException("url must not be null!");
+        }
+        StringBuilder stringBuilder = new StringBuilder(url);
+
+        if (params == null) {
+            params = Maps.newHashMap();
+        }
+
+        stringBuilder.append("?");
+
+        params.forEach((key, value) -> {
+            stringBuilder.append(key).append("=").append(value).append("&");
+        });
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String finalUrl = stringBuilder.toString();
+        HttpGet httpGet = new HttpGet(finalUrl);
+
+        httpGet.addHeader("User-Agent", USER_AGENT);
+        httpGet.addHeader("Content-Type", GET_MARKET_CONTENT_TYPE);
+        httpGet.addHeader("Accept-Language", LANG);
+
+        String responseStr = null;
+        try {
+            CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    httpResponse.getEntity().getContent()));
+
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = reader.readLine()) != null) {
+                response.append(inputLine);
+            }
+            reader.close();
+
+            httpClient.close();
+
+            responseStr = response.toString();
+            return JSON.parseObject(responseStr, clazz);
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage(), e);
+        } catch (ClientProtocolException e) {
+            log.error(e.getMessage(), e);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        } catch (JSONException e) {
+            log.error(e.getMessage(), e);
+            log.error("JSON IS >>> " + responseStr);
+        }
+
+        return null;
+    }
+
 
     public static <T> T get(String url, Map<String, String> params, Class<T> clazz) {
         if (url == null) {
