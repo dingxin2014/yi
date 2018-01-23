@@ -1,5 +1,6 @@
 package com.fateking.yi.dto;
 
+import com.fateking.yi.enums.Symbol;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 @Data
 public class KTick implements Serializable {
 
+    private Symbol symbol;      //交易对
     private Long id;            //K线id
     private BigDecimal open;    //开盘价
     private BigDecimal close;   //收盘价 当K线为最晚的一根时 是最新成交价

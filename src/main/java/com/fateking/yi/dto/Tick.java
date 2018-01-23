@@ -1,5 +1,6 @@
 package com.fateking.yi.dto;
 
+import com.fateking.yi.enums.Symbol;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 public class Tick implements Serializable {
 
+    private Symbol symbol;      //交易对
     private Long id;            //K线id
     private Long ts;
     private BigDecimal open;    //开盘价

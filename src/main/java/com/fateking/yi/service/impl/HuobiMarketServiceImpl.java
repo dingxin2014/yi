@@ -6,15 +6,17 @@ import com.fateking.yi.enums.Period;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.Type;
 import com.fateking.yi.service.MarketService;
-import com.fateking.yi.utils.HttpClientUtil;
+import com.fateking.yi.utils.HuobiHttpClientUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author dingxin
@@ -33,21 +35,29 @@ public class HuobiMarketServiceImpl implements MarketService {
         params.put("symbol", symbol.getCode());
         params.put("period", period.getCode());
         params.put("size", String.valueOf(size));
-        return HttpClientUtil.get(huobiConfig.getKline(), params, HuobiKLineResponse.class).getData();
+        return HuobiHttpClientUtil.get(huobiConfig.getKline(), params, HuobiKLineResponse.class).getData()
+                .stream().map(kTick -> {
+                    kTick.setSymbol(symbol);
+                    return kTick;
+                }).collect(Collectors.toList());
     }
 
     @Override
     public Tick getMerged(Symbol symbol) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        return HttpClientUtil.get(huobiConfig.getMerged(), params, HuobiMergedResponse.class).getTick();
+        Tick tick = HuobiHttpClientUtil.get(huobiConfig.getMerged(), params, HuobiMergedResponse.class).getTick();
+        tick.setSymbol(symbol);
+        return tick;
     }
 
     @Override
     public TradeDetail getTrade(Symbol symbol) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        return HttpClientUtil.get(huobiConfig.getTrade(), params, HuobiTradeDetailResponse.class).getData();
+        TradeDetail detail = HuobiHttpClientUtil.get(huobiConfig.getTrade(), params, HuobiTradeDetailResponse.class).getData();
+        detail.setSymbol(symbol);
+        return detail;
     }
 
     @Override
@@ -55,7 +65,11 @@ public class HuobiMarketServiceImpl implements MarketService {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
         params.put("size", String.valueOf(size));
-        return HttpClientUtil.get(huobiConfig.getHistoryTrade(), params, HuobiHistoryTradeDetailResponse.class).getData();
+        List<HistoryTradeData> list = HuobiHttpClientUtil.get(huobiConfig.getHistoryTrade(), params, HuobiHistoryTradeDetailResponse.class).getData();
+        if (!CollectionUtils.isEmpty(list)) {
+            list.stream().forEach(historyTradeData -> historyTradeData.getData().stream().forEach(e -> e.setSymbol(symbol)));
+        }
+        return list;
     }
 
     @Override
@@ -63,14 +77,18 @@ public class HuobiMarketServiceImpl implements MarketService {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
         params.put("type", type.getCode());
-        return HttpClientUtil.get(huobiConfig.getDepth(), params, HuobiDepthResponse.class).getTick();
+        DepthTick tick = HuobiHttpClientUtil.get(huobiConfig.getDepth(), params, HuobiDepthResponse.class).getTick();
+        tick.setSymbol(symbol);
+        return tick;
     }
 
     @Override
     public Tick getDetail(Symbol symbol) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        return HttpClientUtil.get(huobiConfig.getDetail(), params, HuobiDetailResponse.class).getTick();
+        Tick tick = HuobiHttpClientUtil.get(huobiConfig.getDetail(), params, HuobiDetailResponse.class).getTick();
+        tick.setSymbol(symbol);
+        return tick;
     }
 
 }

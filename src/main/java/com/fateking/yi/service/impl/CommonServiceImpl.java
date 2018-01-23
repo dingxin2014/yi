@@ -5,7 +5,7 @@ import com.fateking.yi.dto.HuobiStandardResponse;
 import com.fateking.yi.dto.SymbolDTO;
 import com.fateking.yi.enums.SymbolPartition;
 import com.fateking.yi.service.CommonService;
-import com.fateking.yi.utils.HttpClientUtil;
+import com.fateking.yi.utils.HuobiHttpClientUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +32,17 @@ public class CommonServiceImpl implements CommonService {
         params.put("price-precision", String.valueOf(pricePrecision));
         params.put("amount-precision", String.valueOf(amountPrecision));
         params.put("symbol-partition", symbolPartition.getCode());
-        return (SymbolDTO) HttpClientUtil.get(huobiConfig.getSymbols(), params, HuobiStandardResponse.class).getData();
+        return (SymbolDTO) HuobiHttpClientUtil.get(huobiConfig.getSymbols(), params, HuobiStandardResponse.class).getData();
     }
 
     @Override
     public Long getTimestamp() {
-        return (Long) HttpClientUtil.get(huobiConfig.getTimestamp(), null, HuobiStandardResponse.class).getData();
+        return (Long) HuobiHttpClientUtil.get(huobiConfig.getTimestamp(), null, HuobiStandardResponse.class).getData();
     }
 
     @Override
     public List<String> getCurrencys() {
-        return (List<String>) HttpClientUtil.get(huobiConfig.getCurrencys(), null, HuobiStandardResponse.class).getData();
+        return (List<String>) HuobiHttpClientUtil.get(huobiConfig.getCurrencys(), null, HuobiStandardResponse.class).getData();
     }
 
 

@@ -10,7 +10,7 @@ import com.fateking.yi.enums.State;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.TradeType;
 import com.fateking.yi.service.OrderService;
-import com.fateking.yi.utils.HttpClientUtil;
+import com.fateking.yi.utils.HuobiHttpClientUtil;
 import com.fateking.yi.utils.SpElUtil;
 import com.fateking.yi.utils.StringUtil;
 import com.google.common.collect.Maps;
@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
         params.put("source", source);
         params.put("symbol", symbol.getCode());
         params.put("type", tradeType.getCode());
-        return (Long) HttpClientUtil.post(huobiConfig.getPlace(), params, HuobiStandardResponse.class).getData();
+        return (Long) HuobiHttpClientUtil.post(huobiConfig.getPlace(), params, HuobiStandardResponse.class).getData();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderId, "order-id must not be null!");
         Map<String, Object> context = Maps.newHashMap();
         context.put("order-id", String.valueOf(orderId));
-        return (Long) HttpClientUtil.post(SpElUtil.parse(huobiConfig.getCancel(), context), null, HuobiStandardResponse.class).getData();
+        return (Long) HuobiHttpClientUtil.post(SpElUtil.parse(huobiConfig.getCancel(), context), null, HuobiStandardResponse.class).getData();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderIdList, "order-ids must not be null!");
         Map<String, String> params = Maps.newHashMap();
         params.put("order-ids", JSON.toJSONString(orderIdList));
-        return (Map<String, List>) HttpClientUtil.post(huobiConfig.getBatchCancel(), params, HuobiStandardResponse.class).getData();
+        return (Map<String, List>) HuobiHttpClientUtil.post(huobiConfig.getBatchCancel(), params, HuobiStandardResponse.class).getData();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderId, "order-id must not be null!");
         Map<String, Object> context = Maps.newHashMap();
         context.put("order-id", orderId);
-        return (Order) HttpClientUtil.get(SpElUtil.parse(huobiConfig.getOrder(), context), null, HuobiStandardResponse.class).getData();
+        return (Order) HuobiHttpClientUtil.get(SpElUtil.parse(huobiConfig.getOrder(), context), null, HuobiStandardResponse.class).getData();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderId, "order-id must not be null!");
         Map<String, Object> context = Maps.newHashMap();
         context.put("order-id", orderId);
-        return (OrderMatch) HttpClientUtil.get(SpElUtil.parse(huobiConfig.getOrderMatch(), context), null, HuobiStandardResponse.class).getData();
+        return (OrderMatch) HuobiHttpClientUtil.get(SpElUtil.parse(huobiConfig.getOrderMatch(), context), null, HuobiStandardResponse.class).getData();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
         if (size != null) {
             params.put("size", String.valueOf(size));
         }
-        return (List<Order>) HttpClientUtil.get(huobiConfig.getDelegate(), params, HuobiStandardResponse.class).getData();
+        return (List<Order>) HuobiHttpClientUtil.get(huobiConfig.getDelegate(), params, HuobiStandardResponse.class).getData();
     }
 
     @Override
@@ -132,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
         if (size != null) {
             params.put("size", String.valueOf(size));
         }
-        return (List<OrderMatch>) HttpClientUtil.get(huobiConfig.getMatch(), params, HuobiStandardResponse.class).getData();
+        return (List<OrderMatch>) HuobiHttpClientUtil.get(huobiConfig.getMatch(), params, HuobiStandardResponse.class).getData();
     }
 
 

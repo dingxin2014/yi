@@ -1,11 +1,9 @@
 package com.fateking.yi.po;
 
+import com.fateking.yi.enums.Symbol;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -13,6 +11,8 @@ import java.math.BigDecimal;
 @Data
 public class KTickPO {
 
+    @Enumerated(EnumType.STRING)
+    private Symbol symbol;
     @Id
     @GeneratedValue
     private Long id;

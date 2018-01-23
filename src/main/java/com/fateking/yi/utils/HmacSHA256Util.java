@@ -1,9 +1,28 @@
 package com.fateking.yi.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Base64Utils;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+@Slf4j
 public class HmacSHA256Util {
+
+    public static String sha256HMACBase64(String message, String secret) {
+        String hash = "";
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+            byte[] bytes = sha256_HMAC.doFinal(message.getBytes());
+            hash = new String(Base64Utils.encode(bytes), "UTF-8");
+        } catch (Exception e) {
+            log.error("Error HmacSHA256 ===========" + e.getMessage());
+        }
+        return hash;
+    }
+
 
     public static String sha256HMAC(String message, String secret) {
         String hash = "";
@@ -13,9 +32,8 @@ public class HmacSHA256Util {
             sha256_HMAC.init(secret_key);
             byte[] bytes = sha256_HMAC.doFinal(message.getBytes());
             hash = byteArrayToHexString(bytes);
-            System.out.println(hash);
         } catch (Exception e) {
-            System.out.println("Error HmacSHA256 ===========" + e.getMessage());
+            log.error("Error HmacSHA256 ===========" + e.getMessage());
         }
         return hash;
     }
