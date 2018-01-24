@@ -2,10 +2,10 @@ package com.fateking.yi.service.impl;
 
 import com.fateking.yi.config.HuobiConfig;
 import com.fateking.yi.dto.Account;
-import com.fateking.yi.dto.Balance;
+import com.fateking.yi.dto.AccountBalance;
 import com.fateking.yi.dto.HuobiStandardResponse;
 import com.fateking.yi.service.AccountService;
-import com.fateking.yi.utils.HuobiHttpClientUtil;
+import com.fateking.yi.support.HuobiHttpClient;
 import com.fateking.yi.utils.SpElUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -24,17 +24,27 @@ import java.util.Map;
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
+    HuobiHttpClient huobiHttpClient;
+    @Autowired
     HuobiConfig huobiConfig;
 
     @Override
     public Account getAccount() {
-        return (Account) HuobiHttpClientUtil.get(huobiConfig.getAccounts(), null, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.get(huobiConfig.getAccounts(), null, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (Account) response.getData();
     }
 
     @Override
-    public Balance getBalance(Long accountId) {
+    public AccountBalance getBalance(Long accountId) {
         Map<String, Object> context = Maps.newHashMap();
         context.put("accountId", accountId);
-        return (Balance) HuobiHttpClientUtil.get(SpElUtil.parse(huobiConfig.getBalance(), context), null, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.get(SpElUtil.parse(huobiConfig.getBalance(), context), null, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (AccountBalance) response.getData();
     }
 }

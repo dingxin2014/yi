@@ -1,5 +1,7 @@
 package com.fateking.yi.main;
 
+import com.fateking.yi.dto.AccountBalance;
+import com.fateking.yi.dto.Balance;
 import com.fateking.yi.dto.DepthTick;
 import com.fateking.yi.dto.Order;
 import com.fateking.yi.enums.State;
@@ -9,6 +11,7 @@ import com.fateking.yi.service.AccountService;
 import com.fateking.yi.service.CommonService;
 import com.fateking.yi.service.MarketService;
 import com.fateking.yi.service.OrderService;
+import com.fateking.yi.support.GlobalContext;
 import com.fateking.yi.support.SpringObjectFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
@@ -51,6 +54,15 @@ public class MainService implements Runnable {
             return;
         } else {
             log.info("交易对为[" + symbol + "]");
+        }
+        log.info("获取账号信息");
+        AccountBalance accountBalance = accountService.getBalance(GlobalContext.account.getId());
+        if (accountBalance != null) {
+            log.info("账号: " + accountBalance.getId());
+            log.info("账号状态: " + accountBalance.getState());
+            if (!CollectionUtils.isEmpty(accountBalance.getList())) {
+
+            }
         }
 
         log.info("检查是否已经存在未完成委托单");

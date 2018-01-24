@@ -6,7 +6,7 @@ import com.fateking.yi.enums.Period;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.Type;
 import com.fateking.yi.service.MarketService;
-import com.fateking.yi.utils.HuobiHttpClientUtil;
+import com.fateking.yi.support.HuobiHttpClient;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 public class HuobiMarketServiceImpl implements MarketService {
 
     @Autowired
+    HuobiHttpClient huobiHttpClient;
+    @Autowired
     HuobiConfig huobiConfig;
 
     @Override
@@ -35,7 +37,11 @@ public class HuobiMarketServiceImpl implements MarketService {
         params.put("symbol", symbol.getCode());
         params.put("period", period.getCode());
         params.put("size", String.valueOf(size));
-        return HuobiHttpClientUtil.getMarket(huobiConfig.getKline(), params, HuobiKLineResponse.class).getData()
+        HuobiKLineResponse response = huobiHttpClient.getMarket(huobiConfig.getKline(), params, HuobiKLineResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return response.getData()
                 .stream().map(kTick -> {
                     kTick.setSymbol(symbol);
                     return kTick;
@@ -46,7 +52,11 @@ public class HuobiMarketServiceImpl implements MarketService {
     public Tick getMerged(Symbol symbol) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        Tick tick = HuobiHttpClientUtil.getMarket(huobiConfig.getMerged(), params, HuobiMergedResponse.class).getTick();
+        HuobiMergedResponse response = huobiHttpClient.getMarket(huobiConfig.getMerged(), params, HuobiMergedResponse.class);
+        if (response == null) {
+            return null;
+        }
+        Tick tick = response.getTick();
         tick.setSymbol(symbol);
         return tick;
     }
@@ -55,7 +65,11 @@ public class HuobiMarketServiceImpl implements MarketService {
     public TradeDetail getTrade(Symbol symbol) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        TradeDetail detail = HuobiHttpClientUtil.getMarket(huobiConfig.getTrade(), params, HuobiTradeDetailResponse.class).getData();
+        HuobiTradeDetailResponse response = huobiHttpClient.getMarket(huobiConfig.getTrade(), params, HuobiTradeDetailResponse.class);
+        if (response == null) {
+            return null;
+        }
+        TradeDetail detail = response.getData();
         detail.setSymbol(symbol);
         return detail;
     }
@@ -65,7 +79,11 @@ public class HuobiMarketServiceImpl implements MarketService {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
         params.put("size", String.valueOf(size));
-        List<HistoryTradeData> list = HuobiHttpClientUtil.getMarket(huobiConfig.getHistoryTrade(), params, HuobiHistoryTradeDetailResponse.class).getData();
+        HuobiHistoryTradeDetailResponse response = huobiHttpClient.getMarket(huobiConfig.getHistoryTrade(), params, HuobiHistoryTradeDetailResponse.class);
+        if (response == null) {
+            return null;
+        }
+        List<HistoryTradeData> list = response.getData();
         if (!CollectionUtils.isEmpty(list)) {
             list.stream().forEach(historyTradeData -> historyTradeData.getData().stream().forEach(e -> e.setSymbol(symbol)));
         }
@@ -78,11 +96,11 @@ public class HuobiMarketServiceImpl implements MarketService {
         params.put("symbol", symbol.getCode());
         params.put("type", type.getCode());
         DepthTick tick = null;
-        try {
-            tick = HuobiHttpClientUtil.getMarket(huobiConfig.getDepth(), params, HuobiDepthResponse.class).getTick();
-        } catch (Exception e) {
-            System.err.println(e);
+        HuobiDepthResponse response = huobiHttpClient.getMarket(huobiConfig.getDepth(), params, HuobiDepthResponse.class);
+        if (response == null) {
+            return null;
         }
+        tick = response.getTick();
         tick.setSymbol(symbol);
         return tick;
     }
@@ -91,7 +109,11 @@ public class HuobiMarketServiceImpl implements MarketService {
     public Tick getDetail(Symbol symbol) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        Tick tick = HuobiHttpClientUtil.getMarket(huobiConfig.getDetail(), params, HuobiDetailResponse.class).getTick();
+        HuobiDetailResponse response = huobiHttpClient.getMarket(huobiConfig.getDetail(), params, HuobiDetailResponse.class);
+        if (response == null) {
+            return null;
+        }
+        Tick tick = response.getTick();
         tick.setSymbol(symbol);
         return tick;
     }

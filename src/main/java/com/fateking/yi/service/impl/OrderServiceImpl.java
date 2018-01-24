@@ -10,7 +10,7 @@ import com.fateking.yi.enums.State;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.TradeType;
 import com.fateking.yi.service.OrderService;
-import com.fateking.yi.utils.HuobiHttpClientUtil;
+import com.fateking.yi.support.HuobiHttpClient;
 import com.fateking.yi.utils.SpElUtil;
 import com.fateking.yi.utils.StringUtil;
 import com.google.common.collect.Maps;
@@ -33,11 +33,12 @@ import static com.fateking.yi.utils.Assert.notNull;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
+    HuobiHttpClient huobiHttpClient;
+    @Autowired
     HuobiConfig huobiConfig;
 
-
     @Override
-    public Long sendOrder(Long accountId, BigDecimal amount, BigDecimal price, String source, Symbol symbol, TradeType tradeType) {
+    public Long placeOrder(Long accountId, BigDecimal amount, BigDecimal price, String source, Symbol symbol, TradeType tradeType) {
         notNull(source, "source must not be null!");
         Map<String, String> params = Maps.newHashMap();
         params.put("account-id", String.valueOf(accountId));
@@ -46,7 +47,11 @@ public class OrderServiceImpl implements OrderService {
         params.put("source", source);
         params.put("symbol", symbol.getCode());
         params.put("type", tradeType.getCode());
-        return (Long) HuobiHttpClientUtil.post(huobiConfig.getPlace(), params, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.post(huobiConfig.getPlace(), params, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (Long) response.getData();
     }
 
     @Override
@@ -54,7 +59,11 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderId, "order-id must not be null!");
         Map<String, Object> context = Maps.newHashMap();
         context.put("order-id", String.valueOf(orderId));
-        return (Long) HuobiHttpClientUtil.post(SpElUtil.parse(huobiConfig.getCancel(), context), null, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.post(SpElUtil.parse(huobiConfig.getCancel(), context), null, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (Long) response.getData();
     }
 
     @Override
@@ -62,7 +71,11 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderIdList, "order-ids must not be null!");
         Map<String, String> params = Maps.newHashMap();
         params.put("order-ids", JSON.toJSONString(orderIdList));
-        return (Map<String, List>) HuobiHttpClientUtil.post(huobiConfig.getBatchCancel(), params, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.post(huobiConfig.getBatchCancel(), params, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (Map<String, List>) response.getData();
     }
 
     @Override
@@ -70,7 +83,11 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderId, "order-id must not be null!");
         Map<String, Object> context = Maps.newHashMap();
         context.put("order-id", orderId);
-        return (Order) HuobiHttpClientUtil.get(SpElUtil.parse(huobiConfig.getOrder(), context), null, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.get(SpElUtil.parse(huobiConfig.getOrder(), context), null, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (Order) response.getData();
     }
 
     @Override
@@ -79,7 +96,11 @@ public class OrderServiceImpl implements OrderService {
         notNull(orderId, "order-id must not be null!");
         Map<String, Object> context = Maps.newHashMap();
         context.put("order-id", orderId);
-        return (OrderMatch) HuobiHttpClientUtil.get(SpElUtil.parse(huobiConfig.getOrderMatch(), context), null, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.get(SpElUtil.parse(huobiConfig.getOrderMatch(), context), null, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (OrderMatch) response.getData();
     }
 
     @Override
@@ -106,7 +127,11 @@ public class OrderServiceImpl implements OrderService {
         if (size != null) {
             params.put("size", String.valueOf(size));
         }
-        return (List<Order>) HuobiHttpClientUtil.get(huobiConfig.getDelegate(), params, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.get(huobiConfig.getDelegate(), params, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (List<Order>) response.getData();
     }
 
     @Override
@@ -132,7 +157,11 @@ public class OrderServiceImpl implements OrderService {
         if (size != null) {
             params.put("size", String.valueOf(size));
         }
-        return (List<OrderMatch>) HuobiHttpClientUtil.get(huobiConfig.getMatch(), params, HuobiStandardResponse.class).getData();
+        HuobiStandardResponse response = huobiHttpClient.get(huobiConfig.getMatch(), params, HuobiStandardResponse.class);
+        if (response == null) {
+            return null;
+        }
+        return (List<OrderMatch>) response.getData();
     }
 
 

@@ -1,14 +1,9 @@
 package com.fateking.yi.main.strategy;
 
-import com.fateking.yi.support.KTickStack;
+import com.fateking.yi.enums.Symbol;
 
 public interface Strategy {
 
-    /**
-     * 解析
-     *
-     * @param stack
-     */
-    void parse(KTickStack stack);
+    StrategyResult parse(Symbol symbol);
 
 }

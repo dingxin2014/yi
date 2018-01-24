@@ -9,17 +9,13 @@ import com.fateking.yi.service.MarketService;
 import com.fateking.yi.service.OrderService;
 import com.fateking.yi.support.GlobalContext;
 import com.fateking.yi.support.SpringObjectFactory;
-import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-
-import static com.fateking.yi.utils.BeanUtils.isNull;
 
 @Slf4j
-public class SyncKLine implements Runnable {
+public class DaemonManagement implements Runnable {
 
     private MarketService marketService;
     private CommonService commonService;
@@ -28,7 +24,7 @@ public class SyncKLine implements Runnable {
 
     private Symbol symbol;          //交易对
 
-    public SyncKLine(Symbol symbol) {
+    public DaemonManagement(Symbol symbol) {
         this.symbol = symbol;
         marketService = SpringObjectFactory.getBean(MarketService.class);
         commonService = SpringObjectFactory.getBean(CommonService.class);
@@ -47,5 +43,12 @@ public class SyncKLine implements Runnable {
         log.info("更新K线");
         List<KTick> KLineList = marketService.getKLine(symbol, Period._1min, 180);
         GlobalContext.stack.get(symbol).parseKList(KLineList);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Long calTime = calendar.getTime().getTime();
+        System.err.println("cal -> " + calTime);
     }
 }

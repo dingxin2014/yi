@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class Balance {
 
-    private Long id;
+    private String balance;     //🈷️余额
+    private String currency;    //币种
+    private String type;        //trade: 交易余额，frozen: 冻结余额
 
 }

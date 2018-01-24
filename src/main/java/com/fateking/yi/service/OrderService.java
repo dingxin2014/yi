@@ -30,8 +30,8 @@ public interface OrderService {
      * @param tradeType 订单类型
      * @return 订单ID
      */
-    Long sendOrder(Long accountId, BigDecimal amount, BigDecimal price, String source,
-                   Symbol symbol, TradeType tradeType);
+    Long placeOrder(Long accountId, BigDecimal amount, BigDecimal price, String source,
+                    Symbol symbol, TradeType tradeType);
 
 
     /**

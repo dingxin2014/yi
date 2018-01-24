@@ -1,10 +1,14 @@
-package com.fateking.yi.utils;
+package com.fateking.yi.support;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
+import com.fateking.yi.config.AccountConfig;
 import com.fateking.yi.exception.IllegalArgumentException;
+import com.fateking.yi.utils.DateUtil;
+import com.fateking.yi.utils.HmacSHA256Util;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -16,7 +20,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,27 +38,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @author dingxin
- */
+@Component
 @Slf4j
-public class HuobiHttpClientUtil {
+public class HuobiHttpClient {
 
     private static final String LANG = "zh-CN";
     private static final String GET_CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String GET_MARKET_CONTENT_TYPE = "application/json";
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36";
+    private static final String OK = "ok";
 
+    @Autowired
+    AccountConfig accountConfig;
 
-    private static String ACCESS_KEY;
-    private static String PRIVATE_KEY;
+    private String accessKey;
+    private String privateKey;
 
-    public static void setKey(String accessKey, String privateKey) {
-        ACCESS_KEY = accessKey;
-        PRIVATE_KEY = privateKey;
+    @PostConstruct
+    public void init() {
+        this.accessKey = accountConfig.getAccessKey();
+        this.privateKey = accountConfig.getPrivateKey();
     }
 
-    public static <T> T getMarket(String url, Map<String, String> params, Class<T> clazz) {
+    public <T> T getMarket(String url, Map<String, String> params, Class<T> clazz) {
         if (url == null) {
             throw new IllegalArgumentException("url must not be null!");
         }
@@ -93,7 +102,12 @@ public class HuobiHttpClientUtil {
             httpClient.close();
 
             responseStr = response.toString();
-            return JSON.parseObject(responseStr, clazz);
+            T resp = JSON.parseObject(responseStr, clazz);
+            if (OK.equals(FieldUtils.readField(resp, "status", true))) {
+                return resp;
+            } else {
+                log.error("ERROR RETURN! >>> " + responseStr);
+            }
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
@@ -103,13 +117,15 @@ public class HuobiHttpClientUtil {
         } catch (JSONException e) {
             log.error(e.getMessage(), e);
             log.error("JSON IS >>> " + responseStr);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
 
         return null;
     }
 
 
-    public static <T> T get(String url, Map<String, String> params, Class<T> clazz) {
+    public <T> T get(String url, Map<String, String> params, Class<T> clazz) {
         if (url == null) {
             throw new IllegalArgumentException("url must not be null!");
         }
@@ -133,8 +149,6 @@ public class HuobiHttpClientUtil {
             }
         }
 
-        String accessKey = ACCESS_KEY;
-        String privateKey = PRIVATE_KEY;
         Date now = DateUtil.getUTCTime();
         String timestamp = DateFormatUtils.format(now, "yyyy-MM-dd'T'HH:mm:ss");
 
@@ -188,7 +202,12 @@ public class HuobiHttpClientUtil {
             httpClient.close();
 
             responseStr = response.toString();
-            return JSON.parseObject(responseStr, clazz);
+            T resp = JSON.parseObject(responseStr, clazz);
+            if (OK.equals(FieldUtils.readField(resp, "status", true))) {
+                return resp;
+            } else {
+                log.error("ERROR RETURN! >>> " + responseStr);
+            }
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
@@ -198,12 +217,13 @@ public class HuobiHttpClientUtil {
         } catch (JSONException e) {
             log.error(e.getMessage(), e);
             log.error("JSON IS >>> " + responseStr);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
-
         return null;
     }
 
-    public static <T> T post(String url, Map<String, String> params, Class<T> clazz) {
+    public <T> T post(String url, Map<String, String> params, Class<T> clazz) {
         if (url == null) {
             throw new IllegalArgumentException("url must not be null!");
         }
@@ -219,9 +239,6 @@ public class HuobiHttpClientUtil {
         if (params != null) {
             params.forEach((key, value) -> urlParameters.add(new BasicNameValuePair(key, value)));
         }
-
-        String accessKey = ACCESS_KEY;
-        String privateKey = PRIVATE_KEY;
 
         Date now = DateUtil.getUTCTime();
         String timestamp = DateFormatUtils.format(now, "yyyy-MM-dd'T'HH:mm:ss");
@@ -270,7 +287,12 @@ public class HuobiHttpClientUtil {
             httpClient.close();
 
             responseStr = response.toString();
-            return JSON.parseObject(responseStr, clazz);
+            T resp = JSON.parseObject(responseStr, clazz);
+            if (OK.equals(FieldUtils.readField(resp, "status", true))) {
+                return resp;
+            } else {
+                log.error("ERROR RETURN! >>> " + responseStr);
+            }
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
         } catch (ClientProtocolException e) {
@@ -280,6 +302,8 @@ public class HuobiHttpClientUtil {
         } catch (JSONException e) {
             log.error(e.getMessage(), e);
             log.error("JSON IS >>> " + responseStr);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package com.fateking.yi.support;
 
+import com.fateking.yi.dto.Account;
 import com.fateking.yi.enums.Symbol;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -24,5 +25,7 @@ public class GlobalContext {
     }
 
     public static final Map<Symbol, KTickStack> stack = Maps.newConcurrentMap();
+
+    public static final Account account = new Account();
 
 }

@@ -1,7 +1,7 @@
 package com.fateking.yi.service;
 
 import com.fateking.yi.dto.Account;
-import com.fateking.yi.dto.Balance;
+import com.fateking.yi.dto.AccountBalance;
 
 /**
  * 获取账号信息
@@ -24,5 +24,5 @@ public interface AccountService {
      * @param accountId
      * @return
      */
-    Balance getBalance(Long accountId);
+    AccountBalance getBalance(Long accountId);
 }
