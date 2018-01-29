@@ -3,6 +3,8 @@ package com.fateking.yi.service;
 import com.fateking.yi.dto.Account;
 import com.fateking.yi.dto.AccountBalance;
 
+import java.util.List;
+
 /**
  * 获取账号信息
  *
@@ -15,7 +17,7 @@ public interface AccountService {
      *
      * @return
      */
-    Account getAccount();
+    List<Account> getAccount();
 
 
     /**

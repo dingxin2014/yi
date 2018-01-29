@@ -3,7 +3,8 @@ package com.fateking.yi.service.impl;
 import com.fateking.yi.config.HuobiConfig;
 import com.fateking.yi.dto.Account;
 import com.fateking.yi.dto.AccountBalance;
-import com.fateking.yi.dto.HuobiStandardResponse;
+import com.fateking.yi.dto.HuobiAccountBalanceResponse;
+import com.fateking.yi.dto.HuobiAccountResponse;
 import com.fateking.yi.service.AccountService;
 import com.fateking.yi.support.HuobiHttpClient;
 import com.fateking.yi.utils.SpElUtil;
@@ -12,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,22 +32,26 @@ public class AccountServiceImpl implements AccountService {
     HuobiConfig huobiConfig;
 
     @Override
-    public Account getAccount() {
-        HuobiStandardResponse response = huobiHttpClient.get(huobiConfig.getAccounts(), null, HuobiStandardResponse.class);
+    public List<Account> getAccount() {
+        HuobiAccountResponse response = huobiHttpClient.get(huobiConfig.getAccounts(), null, HuobiAccountResponse.class);
         if (response == null) {
             return null;
         }
-        return (Account) response.getData();
+        List<Account> accounts = response.getData();
+        if (CollectionUtils.isEmpty(accounts)) {
+            return null;
+        }
+        return accounts;
     }
 
     @Override
     public AccountBalance getBalance(Long accountId) {
         Map<String, Object> context = Maps.newHashMap();
         context.put("accountId", accountId);
-        HuobiStandardResponse response = huobiHttpClient.get(SpElUtil.parse(huobiConfig.getBalance(), context), null, HuobiStandardResponse.class);
+        HuobiAccountBalanceResponse response = huobiHttpClient.get(SpElUtil.parse(huobiConfig.getBalance(), context), null, HuobiAccountBalanceResponse.class);
         if (response == null) {
             return null;
         }
-        return (AccountBalance) response.getData();
+        return response.getData();
     }
 }

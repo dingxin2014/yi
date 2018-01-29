@@ -9,11 +9,13 @@ import com.fateking.yi.support.KTickStack;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,22 +37,23 @@ public class AutoTrade {
 
     @PostConstruct
     public void autoTrade() {
-        syncAccount();
+//        syncAccount();
 
-        this.mainCron = cronConfig.getMain();
-        this.syncCron = cronConfig.getSync();
-        GlobalContext.stack.put(Symbol.XRP_USDT, new KTickStack(180, 60));
-        threadPoolTaskScheduler.schedule(new DaemonManagement(Symbol.XRP_USDT), new CronTrigger(syncCron));
-        threadPoolTaskScheduler.schedule(new MainService(Symbol.XRP_USDT), new CronTrigger(mainCron));
+//        this.mainCron = cronConfig.getMain();
+//        this.syncCron = cronConfig.getSync();
+//        GlobalContext.stack.put(Symbol.XRP_USDT, new KTickStack(180, 60));
+//        threadPoolTaskScheduler.schedule(new DaemonManagement(Symbol.XRP_USDT), new CronTrigger(syncCron));
+//        threadPoolTaskScheduler.schedule(new MainService(Symbol.XRP_USDT), new CronTrigger(mainCron));
     }
 
-    private void syncAccount() {
+    @Async
+    public void syncAccount() {
         for (; ; ) {
             log.info("抓取账号信息");
-            Account account = accountService.getAccount();
-            if (account != null) {
-                BeanUtils.copyProperties(account, GlobalContext.account);
-                log.info("抓取账号信息成功 >>>> " + account.toString());
+            List<Account> accounts = accountService.getAccount();
+            if (accounts != null) {
+                BeanUtils.copyProperties(accounts.get(0), GlobalContext.account);
+                log.info("抓取账号信息成功 >>>> " + accounts.toString());
                 break;
             }
 
