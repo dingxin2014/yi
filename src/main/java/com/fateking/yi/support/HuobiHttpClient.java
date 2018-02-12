@@ -3,6 +3,7 @@ package com.fateking.yi.support;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.fateking.yi.config.AccountConfig;
+import com.fateking.yi.exception.BadResponseException;
 import com.fateking.yi.exception.IllegalArgumentException;
 import com.fateking.yi.utils.DateUtil;
 import com.fateking.yi.utils.HmacSHA256Util;
@@ -21,6 +22,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -60,6 +62,8 @@ public class HuobiHttpClient {
         this.privateKey = accountConfig.getPrivateKey();
     }
 
+
+    @Retryable(BadResponseException.class)
     public <T> T getMarket(String url, Map<String, String> params, Class<T> clazz) {
         if (url == null) {
             throw new IllegalArgumentException("url must not be null!");
@@ -107,6 +111,7 @@ public class HuobiHttpClient {
                 return resp;
             } else {
                 log.error("ERROR RETURN! >>> " + responseStr);
+                throw new BadResponseException(responseStr);
             }
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
@@ -119,12 +124,14 @@ public class HuobiHttpClient {
             log.error("JSON IS >>> " + responseStr);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            throw new BadResponseException(e.getMessage());
         }
 
         return null;
     }
 
 
+    @Retryable(BadResponseException.class)
     public <T> T get(String url, Map<String, String> params, Class<T> clazz) {
         if (url == null) {
             throw new IllegalArgumentException("url must not be null!");
@@ -207,6 +214,7 @@ public class HuobiHttpClient {
                 return resp;
             } else {
                 log.error("ERROR RETURN! >>> " + responseStr);
+                throw new BadResponseException(responseStr);
             }
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
@@ -219,6 +227,7 @@ public class HuobiHttpClient {
             log.error("JSON IS >>> " + responseStr);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            throw new BadResponseException(e.getMessage());
         }
         return null;
     }
@@ -292,6 +301,7 @@ public class HuobiHttpClient {
                 return resp;
             } else {
                 log.error("ERROR RETURN! >>> " + responseStr);
+                throw new BadResponseException(responseStr);
             }
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
@@ -299,6 +309,7 @@ public class HuobiHttpClient {
             log.error(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
+            throw new BadResponseException(e.getMessage());
         } catch (JSONException e) {
             log.error(e.getMessage(), e);
             log.error("JSON IS >>> " + responseStr);

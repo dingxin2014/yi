@@ -22,4 +22,7 @@ public class KTick implements Serializable {
     private BigDecimal vol;     //成交额, 即 sum(每一笔成交价 * 该笔的成交量)
     private Integer count;      //成交笔数
 
+    public BigDecimal mid() {
+        return high.add(low).divide(BigDecimal.valueOf(2), 12, BigDecimal.ROUND_HALF_UP);
+    }
 }

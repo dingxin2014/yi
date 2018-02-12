@@ -37,13 +37,13 @@ public class AutoTrade {
 
     @PostConstruct
     public void autoTrade() {
-//        syncAccount();
+        syncAccount();
 
-//        this.mainCron = cronConfig.getMain();
-//        this.syncCron = cronConfig.getSync();
-//        GlobalContext.stack.put(Symbol.XRP_USDT, new KTickStack(180, 60));
-//        threadPoolTaskScheduler.schedule(new DaemonManagement(Symbol.XRP_USDT), new CronTrigger(syncCron));
-//        threadPoolTaskScheduler.schedule(new MainService(Symbol.XRP_USDT), new CronTrigger(mainCron));
+        this.mainCron = cronConfig.getMain();
+        this.syncCron = cronConfig.getSync();
+        GlobalContext.stack.put(Symbol.XRP_USDT, new KTickStack(180, 60));
+        threadPoolTaskScheduler.schedule(new DaemonManagement(Symbol.XRP_USDT), new CronTrigger(syncCron));
+        threadPoolTaskScheduler.schedule(new MainService(Symbol.XRP_USDT), new CronTrigger(mainCron));
     }
 
     @Async
@@ -52,9 +52,12 @@ public class AutoTrade {
             log.info("抓取账号信息");
             List<Account> accounts = accountService.getAccount();
             if (accounts != null) {
-                BeanUtils.copyProperties(accounts.get(0), GlobalContext.account);
-                log.info("抓取账号信息成功 >>>> " + accounts.toString());
-                break;
+                Account account = accounts.stream().filter(a -> "spot".equals(a.getType())).findFirst().orElse(null);
+                if (account != null) {
+                    BeanUtils.copyProperties(account, GlobalContext.account);
+                    log.info("抓取账号信息成功 >>>> " + accounts.toString());
+                    break;
+                }
             }
 
             try {

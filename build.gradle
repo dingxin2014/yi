@@ -48,6 +48,5 @@ dependencies {
     compile('io.springfox:springfox-swagger-ui:2.2.2')
 
 //    compile('org.springframework:spring-websocket:5.0.2.RELEASE')
-//    compile('javax.websocket:javax.websocket-api:1.1')
 }
 

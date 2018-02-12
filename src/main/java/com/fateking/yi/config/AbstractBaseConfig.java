@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
@@ -38,9 +37,11 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -106,7 +107,7 @@ public abstract class AbstractBaseConfig {
         @Bean
         public RetryTemplate retryTemplate() {
             RetryTemplate retryTemplate = new RetryTemplate();
-            final SimpleRetryPolicy policy = new SimpleRetryPolicy(propertiesConfig.getRetryConfig().getMaxAttempts(), Collections.<Class<? extends Throwable>, Boolean>
+            final SimpleRetryPolicy policy = new SimpleRetryPolicy(propertiesConfig.getMaxAttempts(), Collections.<Class<? extends Throwable>, Boolean>
                     singletonMap(Exception.class, true));
             FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
             fixedBackOffPolicy.setBackOffPeriod(100);
@@ -137,24 +138,12 @@ public abstract class AbstractBaseConfig {
     public abstract Class<? extends BaseException> defaultThrowExceptionClass();
 
     @Configuration
-    @ConfigurationProperties(prefix = "yi")
     @Setter
     @Getter
     public static class PropertiesConfig {
 
-        @Autowired
-        private RetryConfig retryConfig;
-
-
-        @Configuration
-        @ConfigurationProperties(prefix = "retry")
-        @Setter
-        @Getter
-        public static class RetryConfig {
-            @Value("${maxAttempts:#{3}}")
-            private int maxAttempts;
-        }
-
+        @Value("${yi.retry.maxAttempts: #{3}}")
+        private int maxAttempts;
 
     }
 
@@ -185,6 +174,7 @@ public abstract class AbstractBaseConfig {
                 SimpleModule simpleModule = new SimpleModule();
                 simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
                 simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+                simpleModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
                 objectMapper.registerModule(simpleModule);
                 jackson2HttpMessageConverter.setObjectMapper(objectMapper);
                 converters.add(0, jackson2HttpMessageConverter);
@@ -198,6 +188,13 @@ public abstract class AbstractBaseConfig {
             @Override
             public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
                 this.applicationContext = applicationContext;
+            }
+
+            @Override
+            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+                registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/static/favicon.ico");
+                super.addResourceHandlers(registry);
             }
         }
 
@@ -218,7 +215,7 @@ public abstract class AbstractBaseConfig {
 
     }
 
-    @Value("${yi.schedule.pool_size: #{1}}")
+    @Value("${yi.schedule.poolSize: #{1}}")
     private int poolSize;
 
     @Bean

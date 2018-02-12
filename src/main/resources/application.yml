@@ -1,3 +1,5 @@
+server:
+  port: 8888
 
 spring:
   application:
@@ -20,6 +22,7 @@ spring:
   mvc:
     favicon:
       enabled: true
+
 
 logging:
   config: classpath:logback-${spring.profiles.active}.xml
@@ -63,19 +66,20 @@ huobi:
 
 yi:
   account:
-    access_key: edc65547-2806660d-ff9deea5-88acaccc
+    access_key: edc65547-2806660d-ff9deea5-88aca
     private_key:
   retry:
     enable: true
-    max_attempts: 3
+    maxAttempts: 30
   schedule:
-    pool_size: 8
+    poolSize: 8
     cron:
-      main: 0/1 * * * * ?
-      sync: 0/1 * * * * ?
+      main: 0/5 * * * * ?
+      sync: 0/5 * * * * ?
       os: 0 0/30 * * * ?
 
-
+simulate: true   #是否模拟
+range: 180       #min
 
 
 

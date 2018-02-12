@@ -19,5 +19,6 @@ public class StrategyResult implements Serializable {
     private StrategyResultType resultType;      //分析结果
     private BigDecimal riskRatio;               //风险率
     private BigDecimal estimatedProfit;         //预计盈利
+    private String desc;                        //描述
 
 }

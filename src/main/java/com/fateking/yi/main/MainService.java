@@ -7,6 +7,8 @@ import com.fateking.yi.dto.Order;
 import com.fateking.yi.enums.State;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.Type;
+import com.fateking.yi.main.strategy.Strategy;
+import com.fateking.yi.main.strategy.impl.WaveStrategy;
 import com.fateking.yi.service.AccountService;
 import com.fateking.yi.service.CommonService;
 import com.fateking.yi.service.MarketService;
@@ -19,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.fateking.yi.support.GlobalContext.stack;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
@@ -33,6 +36,7 @@ public class MainService implements Runnable {
     private CommonService commonService;
     private AccountService accountService;
     private OrderService orderService;
+    private Strategy strategy;
 
     private Symbol symbol;          //交易对
 
@@ -46,6 +50,7 @@ public class MainService implements Runnable {
         commonService = SpringObjectFactory.getBean(CommonService.class);
         accountService = SpringObjectFactory.getBean(AccountService.class);
         orderService = SpringObjectFactory.getBean(OrderService.class);
+        strategy = SpringObjectFactory.getBean(WaveStrategy.class);
     }
 
     @Override
@@ -86,7 +91,7 @@ public class MainService implements Runnable {
         }
 
         log.info("分析K线");
-
+        strategy.parse(symbol);
 
         log.info("分析深度线");
         DepthTick depth = marketService.getDepth(symbol, Type.Step1);
