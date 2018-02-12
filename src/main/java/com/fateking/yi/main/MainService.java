@@ -8,6 +8,7 @@ import com.fateking.yi.enums.State;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.Type;
 import com.fateking.yi.main.strategy.Strategy;
+import com.fateking.yi.main.strategy.StrategyResult;
 import com.fateking.yi.main.strategy.impl.WaveStrategy;
 import com.fateking.yi.service.AccountService;
 import com.fateking.yi.service.CommonService;
@@ -79,6 +80,7 @@ public class MainService implements Runnable {
                     log.warn("Illegal State!");
                 } else if (order.getState().isInProgress()) {
                     log.info("存在进行中委托单！" + order);
+                    return;
                 }
             });
         }
@@ -91,7 +93,11 @@ public class MainService implements Runnable {
         }
 
         log.info("分析K线");
-        strategy.parse(symbol);
+        StrategyResult result = strategy.parse(symbol);
+        if (StrategyResult.StrategyResultType.CONFIRM.equals(result.getResultType())) {
+            log.info("准备下单");
+
+        }
 
         log.info("分析深度线");
         DepthTick depth = marketService.getDepth(symbol, Type.Step1);

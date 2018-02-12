@@ -21,4 +21,8 @@ public class StrategyResult implements Serializable {
     private BigDecimal estimatedProfit;         //预计盈利
     private String desc;                        //描述
 
+    private BigDecimal sellUnitPrice;
+    private BigDecimal buyUnitPrice;
+
+
 }

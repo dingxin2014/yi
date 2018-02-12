@@ -65,6 +65,7 @@ public class WaveStrategy implements Strategy {
             strategyResult.setDesc("阈值方差 " + threshold + " 实际方差" + var);
         }
 
+
         return strategyResult;
     }
 

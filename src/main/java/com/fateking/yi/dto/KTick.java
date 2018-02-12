@@ -25,4 +25,5 @@ public class KTick implements Serializable {
     public BigDecimal mid() {
         return high.add(low).divide(BigDecimal.valueOf(2), 12, BigDecimal.ROUND_HALF_UP);
     }
+
 }

@@ -45,6 +45,17 @@ public class KTickStack implements Iterable<KTick> {
         return values;
     }
 
+    public List<KTick> recent(int size) {
+        if (size >= this.size) {
+            throw new ArrayIndexOutOfBoundsException("Illegal size " + size + "with " + size + "size.");
+        }
+        List<KTick> values = Lists.newArrayList();
+        for (int i = this.size - 1; i >= this.size - size; i--) {
+            values.add(get(i));
+        }
+        return values;
+    }
+
     public int size() {
         return size;
     }
