@@ -3,7 +3,7 @@ package com.fateking.yi.utils;
 import java.util.StringJoiner;
 import java.util.function.Function;
 
-public class StringUtil {
+public class StringUtils {
 
     public static final <T> String join(CharSequence c, Iterable<T> iterable, Function<T, String> function) {
         StringJoiner joiner = new StringJoiner(",");

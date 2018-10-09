@@ -27,6 +27,17 @@ spring:
 logging:
   config: classpath:logback-${spring.profiles.active}.xml
 
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  type-aliases-package: com.fateking.yi
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
 
 ## https://github.com/huobiapi/API_Docs/wiki/REST_api_reference
 huobi:
@@ -67,7 +78,7 @@ huobi:
 yi:
   account:
     access_key: edc65547-2806660d-ff9deea5-88aca
-    private_key:
+    private_key: 30dd2afd-80e95fb9-6a1b3d67-ee7d4
   retry:
     enable: true
     maxAttempts: 30

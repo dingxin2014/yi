@@ -1,6 +1,5 @@
 package com.fateking.yi.controller;
 
-import com.fateking.yi.config.TestConfig;
 import com.fateking.yi.enums.Period;
 import com.fateking.yi.enums.Symbol;
 import com.fateking.yi.enums.Type;
@@ -25,9 +24,6 @@ public class IndexController {
     AccountService accountService;
     @Autowired
     CommonService commonService;
-
-    @Autowired
-    TestConfig testConfig;
 
     @GetMapping({"", "/"})
     public Result<String> index() {

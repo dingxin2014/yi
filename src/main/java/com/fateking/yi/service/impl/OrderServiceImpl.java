@@ -12,7 +12,7 @@ import com.fateking.yi.enums.TradeType;
 import com.fateking.yi.service.OrderService;
 import com.fateking.yi.support.HuobiHttpClient;
 import com.fateking.yi.utils.SpElUtil;
-import com.fateking.yi.utils.StringUtil;
+import com.fateking.yi.utils.StringUtils;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -108,9 +108,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getDelegations(Symbol symbol, State[] states, TradeType[] types, Date startDate, Date endDate, Direct direct, Integer size, Long from) {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
-        params.put("states", StringUtil.join(",", Arrays.asList(states), State::getCode));
+        params.put("states", StringUtils.join(",", Arrays.asList(states), State::getCode));
         if (types != null) {
-            params.put("types", StringUtil.join(",", Arrays.asList(states), State::getCode));
+            params.put("types", StringUtils.join(",", Arrays.asList(states), State::getCode));
         }
         if (startDate != null) {
             params.put("start-date", DateFormatUtils.format(startDate, "yyyy-MM-dd"));
@@ -140,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
         Map<String, String> params = Maps.newHashMap();
         params.put("symbol", symbol.getCode());
         if (types != null) {
-            params.put("types", StringUtil.join(",", Arrays.asList(types), TradeType::getCode));
+            params.put("types", StringUtils.join(",", Arrays.asList(types), TradeType::getCode));
         }
         if (startDate != null) {
             params.put("start-date", DateFormatUtils.format(startDate, "yyyy-MM-dd"));
